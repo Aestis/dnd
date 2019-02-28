@@ -75,6 +75,14 @@ public class Main extends JavaPlugin {
         if (!config.isSet("entity.Drop.Exp.Rnd.Max")) {config.set("entity.Drop.Exp.Rnd.Max", 7);}
         if (!config.isSet("block.Drop.Ore")) {config.set("block.Drop.Ore.Enabled", true);}
         if (!config.isSet("block.Drop.Ore.Diamond.Chance")) {config.set("block.Drop.Ore.Diamond.Chance", 4);}
+        if (!config.isSet("block.Drop.Ore.Diamond.Min")) {config.set("block.Drop.Ore.Diamond.Min", 1);}
+        if (!config.isSet("block.Drop.Ore.Diamond.Max")) {config.set("block.Drop.Ore.Diamond.Max", 1);}
+        if (!config.isSet("block.Drop.Ore.Gold.Chance")) {config.set("block.Drop.Ore.Gold.Chance", 2);}
+        if (!config.isSet("block.Drop.Ore.Gold.Min")) {config.set("block.Drop.Ore.Gold.Min", 1);}
+        if (!config.isSet("block.Drop.Ore.Gold.Max")) {config.set("block.Drop.Ore.Gold.Max", 1);}
+        if (!config.isSet("block.Drop.Ore.Iron.Chance")) {config.set("block.Drop.Ore.Iron.Chance", 6);}
+        if (!config.isSet("block.Drop.Ore.Iron.Min")) {config.set("block.Drop.Ore.Iron.Min", 1);}
+        if (!config.isSet("block.Drop.Ore.Iron.Max")) {config.set("block.Drop.Ore.Iron.Max", 3);}
         
         saveConfig();
     }
