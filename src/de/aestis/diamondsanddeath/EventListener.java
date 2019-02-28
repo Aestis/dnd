@@ -117,6 +117,7 @@ public class EventListener implements Listener {
 	//new mining system + stats
 	@EventHandler
 	public void onBlockBreak (BlockBreakEvent event) {
+		Helpers hp = new Helpers();
 		Block blk = event.getBlock();
 		Location blkLoc = blk.getLocation();
 		Material blkMat = blk.getBlockData().getMaterial();
@@ -124,9 +125,23 @@ public class EventListener implements Listener {
 		if (Config.getBoolean("block.Drop.Ore.Enabled")) {
 			//generate rnd drops
 			int rndChance = ThreadLocalRandom.current().nextInt(0, 100);
-			if (rndChance <= Config.getInt("block.Drop.Ore.Diamond.Chance")) {
-				if (blkMat == Material.DIAMOND_ORE) {
-					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.EMERALD, 1));
+			if (blkMat == Material.DIAMOND_ORE) {
+				if (rndChance <= Config.getInt("block.Drop.Ore.Diamond.Chance")) {
+					int dropCount = hp.getRndInt(Config.getInt("block.Drop.Ore.Diamond.Min"), Config.getInt("block.Drop.Ore.Diamond.Max"));
+					Bukkit.getServer().broadcastMessage("drpcnt: " + dropCount);
+					blkLoc.getWorld().dropItemNaturally(blkLoc, new ItemStack(Material.EMERALD, dropCount));
+				}
+			} else if (blkMat == Material.GOLD_ORE) {
+				Bukkit.getServer().broadcastMessage("rnd extra drop gold");
+				if (rndChance <= Config.getInt("block.Drop.Ore.Gold.Chance")) {
+					int dropCount = ThreadLocalRandom.current().nextInt(Config.getInt("block.Drop.Ore.Gold.Min"), Config.getInt("block.Drop.Ore.Gold.Max"));
+					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.GOLDEN_APPLE, dropCount));
+				}
+			} else if (blkMat == Material.IRON_ORE) {
+				Bukkit.getServer().broadcastMessage("rnd extra iron");
+				if (rndChance <= Config.getInt("block.Drop.Ore.Iron.Chance")) {
+					int dropCount = ThreadLocalRandom.current().nextInt(Config.getInt("block.Drop.Ore.Iron.Min"), Config.getInt("block.Drop.Ore.Iron.Max"));
+					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.STONE_BRICKS, dropCount));
 				}
 			}
 		}
