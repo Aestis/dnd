@@ -73,6 +73,8 @@ public class Main extends JavaPlugin {
         if (!config.isSet("entity.Drop.Exp.Rnd.Chance")) {config.set("entity.Drop.Exp.Rnd.Chance", 10);}
         if (!config.isSet("entity.Drop.Exp.Rnd.Min")) {config.set("entity.Drop.Exp.Rnd.Min", 1);}
         if (!config.isSet("entity.Drop.Exp.Rnd.Max")) {config.set("entity.Drop.Exp.Rnd.Max", 7);}
+        if (!config.isSet("block.Drop.Ore")) {config.set("block.Drop.Ore.Enabled", true);}
+        if (!config.isSet("block.Drop.Ore.Diamond.Chance")) {config.set("block.Drop.Ore.Diamond.Chance", 4);}
         
         saveConfig();
     }
