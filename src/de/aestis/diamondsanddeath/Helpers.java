@@ -1,12 +1,20 @@
 package de.aestis.diamondsanddeath;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
+
+import net.minecraft.server.v1_13_R2.EntityLiving;
+import net.minecraft.server.v1_13_R2.NBTTagCompound;
 
 public class Helpers {
 	
@@ -20,6 +28,23 @@ public class Helpers {
 		return r.nextInt((max - min) + 1) + min;
 	}
 	
+    public String md5Hash(String string) {
+        MessageDigest md = null;
+        
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+        byte[] hashInBytes = md.digest(string.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashInBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
 	
 	public boolean isInventoryEmpty(Player player){
 		for(ItemStack item : player.getInventory().getContents()) {

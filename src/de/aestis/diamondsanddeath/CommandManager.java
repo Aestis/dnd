@@ -1,10 +1,19 @@
 package de.aestis.diamondsanddeath;
 
 import java.sql.*;
+import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 
 import de.aestis.diamondsanddeath.Main;
 import net.md_5.bungee.api.ChatColor;
@@ -17,6 +26,8 @@ public class CommandManager implements CommandExecutor {
 		
 		TeamManager tm = new TeamManager();
 		PlayerManager pm = new PlayerManager();
+		TurretManager tr = new TurretManager();
+		GameEvents ge = new GameEvents();
 		
 		if (cmd.getName().equalsIgnoreCase("dd")) {
 			if (argArr[0].equalsIgnoreCase("team")) {
@@ -55,19 +66,78 @@ public class CommandManager implements CommandExecutor {
 				}
 			}
 			
+			if (argArr[0].equalsIgnoreCase("join")) {
+				
+				//is currently in a team?
+				if (!pm.hasTeam(sender.getName())) {
+					//team already existing?
+					pm.joinTeam(sender.getName(), argArr[1], 0);
+					sender.sendMessage("Team " + ChatColor.YELLOW + argArr[1] + ChatColor.WHITE + " erfolgreich beigetreten!");
+				} else {
+					sender.sendMessage("Du bist bereits Mitglied eines Teams.");
+				}
+			}
+			
 			if (argArr[0].equalsIgnoreCase("leave")) {
 				
 				//is currently in a team?
 				if (pm.hasTeam(sender.getName())) {
 					String teamName = pm.getTeam(sender.getName());
 					
-					if (pm.leaveTeam(sender.getName())) {
-						sender.sendMessage("Du bist dem Team " + ChatColor.YELLOW + teamName + ChatColor.WHITE + " ausgetreten!");
+					if (pm.leaveTeam(sender.getName())) sender.sendMessage("Du bist dem Team " + ChatColor.YELLOW + teamName + ChatColor.WHITE + " ausgetreten!");
+				} else {
+					sender.sendMessage("Du gehörst momentan keinem Team an.");
+				}
+			}
+			
+			if (argArr[0].equalsIgnoreCase("setclaim")) {
+				
+				//abfragen noch hier rein machen
+				if (pm.hasTeam(sender.getName())) {
+					if (pm.isTeamLeader(sender.getName())) {
+						tm.setClaim(pm.getTeam(sender.getName()), Bukkit.getPlayer(sender.getName()).getLocation());
 					} else {
-						sender.sendMessage("Error #003.1");
+						sender.sendMessage("Du hast hierfür keine Berechtigung!");
 					}
 				} else {
 					sender.sendMessage("Du gehörst momentan keinem Team an.");
+				}
+			}
+			
+			if (argArr[0].equalsIgnoreCase("getclaim")) {
+				
+				//abfragen noch hier rein machen
+				if (pm.hasTeam(sender.getName())) {
+					if (pm.isTeamLeader(sender.getName())) {
+						Location claimMiddle = tm.getClaim(pm.getTeam(sender.getName()));
+						
+					} else {
+						sender.sendMessage("Du hast hierfür keine Berechtigung!");
+					}
+				} else {
+					sender.sendMessage("Du gehörst momentan keinem Team an.");
+				}
+			}
+			
+			if (argArr[0].equalsIgnoreCase("buyturret")) {
+				
+				//abfragen noch hier rein machen
+				if (pm.hasTeam(sender.getName())) {
+					if (pm.isTeamLeader(sender.getName())) {
+						if (tr.createTurret(Bukkit.getPlayer(sender.getName()), pm.getTeam(sender.getName()))) sender.sendMessage("Turret erfolgreich gekauft!");
+					} else {
+						sender.sendMessage("Du hast hierfür keine Berechtigung!");
+					}
+				} else {
+					sender.sendMessage("Du gehörst momentan keinem Team an.");
+				}
+			}
+			
+			if (argArr[0].equalsIgnoreCase("boss")) {
+				
+				Entity boss = ge.spawnBoss(argArr[1]);
+				if (boss != null) {
+					Bukkit.broadcastMessage(ChatColor.DARK_RED + boss.getCustomName() + ChatColor.WHITE + " ist erschienen!");
 				}
 			}
 		}

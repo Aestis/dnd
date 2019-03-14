@@ -19,10 +19,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -30,14 +33,16 @@ public class EventListener implements Listener {
 	
 	FileConfiguration Config = Main.instance.getConfig();
 	
-
+	
 	@EventHandler
 	public <PlayerMessage> void onMessage(AsyncPlayerChatEvent event) {
 		PlayerManager pm = new PlayerManager();
 		Player player = event.getPlayer();
 		
 		if (pm.hasTeam(player.getName())) {
-			event.setFormat(ChatColor.DARK_AQUA + "[" + pm.getTeam(player.getName()) + "] " + ChatColor.WHITE + "%s: %s");
+			String teamStr = "[" + pm.getTeam(player.getName()) + "] ";
+			if (pm.isTeamLeader(player.getName())) teamStr = "[**]" + teamStr;
+			event.setFormat(ChatColor.DARK_AQUA + teamStr + ChatColor.WHITE + "%s: %s");
 		}
 	}
 	
@@ -81,13 +86,18 @@ public class EventListener implements Listener {
 		if (!Config.getBoolean("entity.Drop.Exp.Normal")) {
 			int rndChance = ThreadLocalRandom.current().nextInt(0, 100);
 			
-			if (rndChance <= Config.getInt("entity.Drop.Exp.Rnd.Chance")) {
-				int rndExpDrop = ThreadLocalRandom.current().nextInt(Config.getInt("entity.Drop.Exp.Rnd.Min"), Config.getInt("entity.Drop.Exp.Rnd.Max"));
-				
-				player.sendMessage("+" + rndExpDrop + " Exp");
-				event.setDroppedExp(rndExpDrop);
+			if (entity.isOp()) {
+				event.setDroppedExp(rndChance);
+				Bukkit.broadcastMessage(entity.getCustomName() + " wurde von " + player.getName() + " erlegt.");
 			} else {
-				event.setDroppedExp(-1);
+				if (rndChance <= Config.getInt("entity.Drop.Exp.Rnd.Chance")) {
+					int rndExpDrop = ThreadLocalRandom.current().nextInt(Config.getInt("entity.Drop.Exp.Rnd.Min"), Config.getInt("entity.Drop.Exp.Rnd.Max"));
+					
+					player.sendMessage("+" + rndExpDrop + " Exp");
+					event.setDroppedExp(rndExpDrop);
+				} else {
+					event.setDroppedExp(-1);
+				}
 			}
 		}
 		
@@ -144,6 +154,23 @@ public class EventListener implements Listener {
 					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.STONE_BRICKS, dropCount));
 				}
 			}
+		}
+	}
+	
+	//new block durability
+	@EventHandler
+	public void onBlockMining (PlayerInteractEvent event) {
+		Helpers hp = new Helpers();
+		Player player = event.getPlayer();
+		Block blk = hp.getTargetBlock(player, 6);
+		Material blkMat = blk.getType();
+		
+		player.sendMessage("PlayerInteractEvent " + blkMat.name());
+		
+		if (blkMat == Material.ACACIA_STAIRS) {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 200, 3));
+		} else {
+			player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
 		}
 	}
 

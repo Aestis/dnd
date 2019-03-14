@@ -45,21 +45,23 @@ public class PlayerManager {
 	}
 	
 	
-	public void joinTeam(String playerName, String teamName) {
+	public void joinTeam(String playerName, String teamName, Integer type) {
 		Players.set("Players." + playerName + ".Team", teamName);
-		Players.set("Players." + playerName + ".IsLeader", "false");
 		Players.set("Players." + playerName + ".JoinedDate", Calendar.getInstance().getTime());
-		
+		if (type == 1) {
+			Players.set("Players." + playerName + ".IsLeader", true);
+		} else {
+			Players.set("Players." + playerName + ".IsLeader", false);
+		}
 		saveConfig();
 	}
 	
 	public boolean leaveTeam(String playerName) {
 		TeamManager tm = new TeamManager();
 		String teamName = getTeam(playerName);
-			
+		
 		if (playerName.contains(tm.getTeamLeader(teamName))) tm.unregisterTeam(teamName);
 		Players.set("Players." + playerName + ".Team", null);
-		
 		saveConfig();
 		return true;
 	}
@@ -73,15 +75,18 @@ public class PlayerManager {
 		if (hasTeam(playerName)) {
 			return Players.getString("Players." + playerName + ".Team");
 		}
-		
 		return null;
+	}
+	
+	public boolean isTeamLeader(String playerName) {
+		if (Players.getBoolean("Players." + playerName + ".IsLeader")) return true;
+		return false;
 	}
 	
 	public void addKill(String playerName, String killType) {
 		String ymlKills = "Players." + playerName + ".Kills." + killType;
 		
 		Players.set(ymlKills, (Players.getInt(ymlKills) + 1));
-		
 		saveConfig();
 	}
 	
