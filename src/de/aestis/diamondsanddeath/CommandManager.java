@@ -22,13 +22,13 @@ public class CommandManager implements CommandExecutor {
 	
 	Connection conn = Main.instance.connection;
 	
+	TeamManager tm = new TeamManager();
+	PlayerManager pm = new PlayerManager();
+	TurretManager tr = new TurretManager();
+	GameEvents ge = new GameEvents();
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String arg, String[] argArr) {
-		
-		TeamManager tm = new TeamManager();
-		PlayerManager pm = new PlayerManager();
-		TurretManager tr = new TurretManager();
-		GameEvents ge = new GameEvents();
-		
+
 		if (cmd.getName().equalsIgnoreCase("dd")) {
 			if (argArr[0].equalsIgnoreCase("team")) {
 				

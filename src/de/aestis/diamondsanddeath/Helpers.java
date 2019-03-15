@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
@@ -65,4 +66,12 @@ public class Helpers {
         }
         return lastBlock;
     }
+	
+	public boolean playerInBounds(Player player, Double locX, Double locZ, Double distance) {
+		Location playerLoc = player.getLocation();
+		
+		if (playerLoc.getBlockX() > locX + distance || playerLoc.getBlockX() < locX - distance) return true;
+		if (playerLoc.getBlockZ() > locZ + distance || playerLoc.getBlockZ() < locZ - distance) return true;
+		return false;
+	}
 }

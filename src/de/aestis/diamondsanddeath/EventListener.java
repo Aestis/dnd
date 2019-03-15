@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -165,12 +166,21 @@ public class EventListener implements Listener {
 		Block blk = hp.getTargetBlock(player, 6);
 		Material blkMat = blk.getType();
 		
-		player.sendMessage("PlayerInteractEvent " + blkMat.name());
+		//player.sendMessage("PlayerInteractEvent " + blkMat.name());
 		
 		if (blkMat == Material.ACACIA_STAIRS) {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 200, 3));
 		} else {
 			player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+		}
+	}
+	
+	@EventHandler
+	public void playerAttack(EntityDamageByEntityEvent event) {
+		Helpers hp = new Helpers();
+		
+		if (hp.playerInBounds(Bukkit.getPlayer("Guerkchen385"), 0.0, 0.0, 20.0)) {
+			Bukkit.broadcastMessage("Hey! Warum greifst du mich an?");
 		}
 	}
 
