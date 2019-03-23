@@ -2,7 +2,7 @@ name: DiamondsAndDeathReloaded
 main: de.aestis.diamondsanddeath.Main
 description: Faction Based Minigame for JenoMiners.de
 version: 1.0
-author: Gurke
+author: [Gurke, oxolotel21]
 api-version: 1.13
 commands:
    dd:
