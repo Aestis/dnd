@@ -21,30 +21,30 @@ import org.bukkit.inventory.ItemStack;
 
 public class GameEvents {
 	
-	FileConfiguration Events;
-	File EventYml = new File(Main.instance.getDataFolder() + "/gameevents.yml");
+	FileConfiguration events;
+	File eventYml = new File(Main.instance.getDataFolder() + "/gameevents.yml");
 	
 
 	public GameEvents() {
-        if (!EventYml.exists()) {
+        if (!eventYml.exists()) {
             try {
-            	EventYml.createNewFile();
+            	eventYml.createNewFile();
             }  catch (IOException ex) {
             	ex.printStackTrace();
             }
         }
 		
-        Events = new YamlConfiguration();
+        events = new YamlConfiguration();
 	    loadConfig();
 	    
-	    if (!Events.isSet("bossMob.enabled")) Events.set("bossMob.enabled", true);
+	    if (!events.isSet("bossMob.enabled")) events.set("bossMob.enabled", true);
 	    saveConfig();
 	}
 	
 	private void saveConfig() {
 		try {
-			Events.save(EventYml);
-			Events.load(EventYml);
+			events.save(eventYml);
+			events.load(eventYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class GameEvents {
 	
 	private void loadConfig() {
 		try {
-			Events.load(EventYml);
+			events.load(eventYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}

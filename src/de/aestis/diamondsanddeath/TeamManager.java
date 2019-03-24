@@ -13,20 +13,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TeamManager {
 
-	FileConfiguration Teams;
-	File TeamsYml = new File(Main.instance.getDataFolder() + "/teams.yml");
+	FileConfiguration teams;
+	File teamsYml = new File(Main.instance.getDataFolder() + "/teams.yml");
 	private static TeamManager instance;
 
 	private TeamManager() {
-        if (!TeamsYml.exists()) {
+        if (!teamsYml.exists()) {
             try {
-            	TeamsYml.createNewFile();
+            	teamsYml.createNewFile();
             }  catch (IOException ex) {
             	ex.printStackTrace();
             }
         }
 		
-		Teams = new YamlConfiguration();
+		teams = new YamlConfiguration();
 	    loadConfig();
 	}
 	
@@ -39,8 +39,8 @@ public class TeamManager {
 	
 	private void saveConfig() {
 		try {
-			Teams.save(TeamsYml);
-			Teams.load(TeamsYml);
+			teams.save(teamsYml);
+			teams.load(teamsYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -48,7 +48,7 @@ public class TeamManager {
 	
 	private void loadConfig() {
 		try {
-			Teams.load(TeamsYml);
+			teams.load(teamsYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -58,10 +58,10 @@ public class TeamManager {
 	public boolean registerTeam(String teamName, String password, String playerName) {
 		PlayerManager pm = PlayerManager.getInstance();
 		
-		if (!Teams.isSet("Teams." + teamName)) {
-			Teams.set("Teams." + teamName + ".Leader", playerName);
-			Teams.set("Teams." + teamName + ".Password", password);
-			Teams.set("Teams." + teamName + ".Created", Calendar.getInstance().getTime());
+		if (!teams.isSet("Teams." + teamName)) {
+			teams.set("Teams." + teamName + ".Leader", playerName);
+			teams.set("Teams." + teamName + ".Password", password);
+			teams.set("Teams." + teamName + ".Created", Calendar.getInstance().getTime());
 			pm.joinTeam(playerName, teamName, 1);
 		} else {
 			return false;
@@ -72,27 +72,27 @@ public class TeamManager {
 	}
 	
 	public void unregisterTeam(String teamName) {
-		Teams.set("Teams." + teamName, null);
+		teams.set("Teams." + teamName, null);
 		saveConfig();
 	}
 	
 	public String getTeamLeader(String teamName) {
-		return Teams.getString("Teams." + teamName + ".Leader");
+		return teams.getString("Teams." + teamName + ".Leader");
 	}
 	
 	public void setClaim(String teamName, Location location) {
-		Teams.set("Teams." + teamName + ".Claim.X", location.getBlockX());
-		Teams.set("Teams." + teamName + ".Claim.Y", location.getBlockY());
-		Teams.set("Teams." + teamName + ".Claim.Z", location.getBlockZ());
+		teams.set("Teams." + teamName + ".Claim.X", location.getBlockX());
+		teams.set("Teams." + teamName + ".Claim.Y", location.getBlockY());
+		teams.set("Teams." + teamName + ".Claim.Z", location.getBlockZ());
 		saveConfig();
 	}
 	
 	public Location getClaim(String teamName) {
-		if (!Teams.isSet("Teams." + teamName + ".Claim")) return null;
+		if (!teams.isSet("Teams." + teamName + ".Claim")) return null;
 		
-		Double locX = Teams.getDouble("Teams." + teamName + ".Claim.X");
-		Double locY = Teams.getDouble("Teams." + teamName + ".Claim.Y");
-		Double locZ = Teams.getDouble("Teams." + teamName + ".Claim.Z");
+		Double locX = teams.getDouble("Teams." + teamName + ".Claim.X");
+		Double locY = teams.getDouble("Teams." + teamName + ".Claim.Y");
+		Double locZ = teams.getDouble("Teams." + teamName + ".Claim.Z");
 		Location loc = new Location(Bukkit.getWorld("world"), locX, locY, locZ);
 		
 		return loc;

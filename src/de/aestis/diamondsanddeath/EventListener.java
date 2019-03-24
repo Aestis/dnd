@@ -32,7 +32,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class EventListener implements Listener {
 	
-	FileConfiguration Config = Main.instance.getConfig();
+	FileConfiguration config = Main.instance.getConfig();
 	
 	
 	@EventHandler
@@ -84,15 +84,15 @@ public class EventListener implements Listener {
 		Player player = event.getEntity().getKiller();
 
 		//alternative exp drop system
-		if (!Config.getBoolean("entity.Drop.Exp.Normal")) {
+		if (!config.getBoolean("entity.Drop.Exp.Normal")) {
 			int rndChance = ThreadLocalRandom.current().nextInt(0, 100);
 			
 			if (entity.isOp()) {
 				event.setDroppedExp(rndChance);
 				Bukkit.broadcastMessage(entity.getCustomName() + " wurde von " + player.getName() + " erlegt.");
 			} else {
-				if (rndChance <= Config.getInt("entity.Drop.Exp.Rnd.Chance")) {
-					int rndExpDrop = ThreadLocalRandom.current().nextInt(Config.getInt("entity.Drop.Exp.Rnd.Min"), Config.getInt("entity.Drop.Exp.Rnd.Max"));
+				if (rndChance <= config.getInt("entity.Drop.Exp.Rnd.Chance")) {
+					int rndExpDrop = ThreadLocalRandom.current().nextInt(config.getInt("entity.Drop.Exp.Rnd.Min"), config.getInt("entity.Drop.Exp.Rnd.Max"));
 					
 					player.sendMessage("+" + rndExpDrop + " Exp");
 					event.setDroppedExp(rndExpDrop);
@@ -133,25 +133,25 @@ public class EventListener implements Listener {
 		Location blkLoc = blk.getLocation();
 		Material blkMat = blk.getBlockData().getMaterial();
 		
-		if (Config.getBoolean("block.Drop.Ore.Enabled")) {
+		if (config.getBoolean("block.Drop.Ore.Enabled")) {
 			//generate rnd drops
 			int rndChance = ThreadLocalRandom.current().nextInt(0, 100);
 			if (blkMat == Material.DIAMOND_ORE) {
-				if (rndChance <= Config.getInt("block.Drop.Ore.Diamond.Chance")) {
-					int dropCount = hp.getRndInt(Config.getInt("block.Drop.Ore.Diamond.Min"), Config.getInt("block.Drop.Ore.Diamond.Max"));
+				if (rndChance <= config.getInt("block.Drop.Ore.Diamond.Chance")) {
+					int dropCount = hp.getRndInt(config.getInt("block.Drop.Ore.Diamond.Min"), config.getInt("block.Drop.Ore.Diamond.Max"));
 					Bukkit.getServer().broadcastMessage("drpcnt: " + dropCount);
 					blkLoc.getWorld().dropItemNaturally(blkLoc, new ItemStack(Material.EMERALD, dropCount));
 				}
 			} else if (blkMat == Material.GOLD_ORE) {
 				Bukkit.getServer().broadcastMessage("rnd extra drop gold");
-				if (rndChance <= Config.getInt("block.Drop.Ore.Gold.Chance")) {
-					int dropCount = ThreadLocalRandom.current().nextInt(Config.getInt("block.Drop.Ore.Gold.Min"), Config.getInt("block.Drop.Ore.Gold.Max"));
+				if (rndChance <= config.getInt("block.Drop.Ore.Gold.Chance")) {
+					int dropCount = ThreadLocalRandom.current().nextInt(config.getInt("block.Drop.Ore.Gold.Min"), config.getInt("block.Drop.Ore.Gold.Max"));
 					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.GOLDEN_APPLE, dropCount));
 				}
 			} else if (blkMat == Material.IRON_ORE) {
 				Bukkit.getServer().broadcastMessage("rnd extra iron");
-				if (rndChance <= Config.getInt("block.Drop.Ore.Iron.Chance")) {
-					int dropCount = ThreadLocalRandom.current().nextInt(Config.getInt("block.Drop.Ore.Iron.Min"), Config.getInt("block.Drop.Ore.Iron.Max"));
+				if (rndChance <= config.getInt("block.Drop.Ore.Iron.Chance")) {
+					int dropCount = ThreadLocalRandom.current().nextInt(config.getInt("block.Drop.Ore.Iron.Min"), config.getInt("block.Drop.Ore.Iron.Max"));
 					blk.getLocation().getWorld().dropItemNaturally(blk.getLocation(), new ItemStack(Material.STONE_BRICKS, dropCount));
 				}
 			}

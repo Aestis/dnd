@@ -12,20 +12,20 @@ import org.bukkit.entity.Player;
 
 public class TurretManager {
 
-	FileConfiguration Turrets;
-	File TurretYml = new File(Main.instance.getDataFolder() + "/turrets.yml");
+	FileConfiguration turrets;
+	File turretYml = new File(Main.instance.getDataFolder() + "/turrets.yml");
 	private static TurretManager instance;
 
 	private TurretManager() {
-        if (!TurretYml.exists()) {
+        if (!turretYml.exists()) {
             try {
-            	TurretYml.createNewFile();
+            	turretYml.createNewFile();
             }  catch (IOException ex) {
             	ex.printStackTrace();
             }
         }
 		
-        Turrets = new YamlConfiguration();
+        turrets = new YamlConfiguration();
 	    loadConfig();
 	    
 	    spawnTurrets();
@@ -40,8 +40,8 @@ public class TurretManager {
 	
 	private void saveConfig() {
 		try {
-			Turrets.save(TurretYml);
-			Turrets.load(TurretYml);
+			turrets.save(turretYml);
+			turrets.load(turretYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -49,14 +49,14 @@ public class TurretManager {
 	
 	private void loadConfig() {
 		try {
-			Turrets.load(TurretYml);
+			turrets.load(turretYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
 	}
 	
 	private void spawnTurrets() {
-		Set<String> arr = Turrets.getKeys(true);
+		Set<String> arr = turrets.getKeys(true);
 		System.out.print(arr);
 	}
 	
@@ -65,10 +65,10 @@ public class TurretManager {
 		Helpers hp = new Helpers();
 		String tID = hp.md5Hash(Calendar.getInstance().getTime().toString());
 		
-		Turrets.set("Turrets." + teamName + ".Turret" + tID + ".ID", tID);
-		Turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.X", player.getLocation().getBlockX());
-		Turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.Y", player.getLocation().getBlockY());
-		Turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.Z", player.getLocation().getBlockZ());
+		turrets.set("Turrets." + teamName + ".Turret" + tID + ".ID", tID);
+		turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.X", player.getLocation().getBlockX());
+		turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.Y", player.getLocation().getBlockY());
+		turrets.set("Turrets." + teamName + ".Turret" + tID + ".Position.Z", player.getLocation().getBlockZ());
 		
 		saveConfig();
 		return true;
