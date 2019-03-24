@@ -37,7 +37,7 @@ public class EventListener implements Listener {
 	
 	@EventHandler
 	public <PlayerMessage> void onMessage(AsyncPlayerChatEvent event) {
-		PlayerManager pm = new PlayerManager();
+		PlayerManager pm = PlayerManager.getInstance();
 		Player player = event.getPlayer();
 		
 		if (pm.hasTeam(player.getName())) {
@@ -49,7 +49,7 @@ public class EventListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		PlayerManager pm = new PlayerManager();
+		PlayerManager pm = PlayerManager.getInstance();
 		Player player = event.getPlayer();
 		
 		player.getInventory().clear();
@@ -79,7 +79,7 @@ public class EventListener implements Listener {
 	public void onEntityKill(EntityDeathEvent event) {
 		if (event.getEntity().getKiller() == null) return;
 		
-		PlayerManager pm = new PlayerManager();
+		PlayerManager pm = PlayerManager.getInstance();
 		Entity entity = event.getEntity();
 		Player player = event.getEntity().getKiller();
 

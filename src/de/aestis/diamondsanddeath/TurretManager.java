@@ -14,9 +14,9 @@ public class TurretManager {
 
 	FileConfiguration Turrets;
 	File TurretYml = new File(Main.instance.getDataFolder() + "/turrets.yml");
-	
+	private static TurretManager instance;
 
-	public TurretManager() {
+	private TurretManager() {
         if (!TurretYml.exists()) {
             try {
             	TurretYml.createNewFile();
@@ -29,6 +29,13 @@ public class TurretManager {
 	    loadConfig();
 	    
 	    spawnTurrets();
+	}
+	
+	public static TurretManager getInstance() {
+		if (instance == null) {
+			instance = new TurretManager();
+		}
+		return instance;
 	}
 	
 	private void saveConfig() {

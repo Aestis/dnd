@@ -10,27 +10,34 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class PlayerManager {
 	
-	FileConfiguration Players;
-	File PlayersYml = new File(Main.instance.getDataFolder() + "/players.yml");
+	FileConfiguration players;
+	File playersYml = new File(Main.instance.getDataFolder() + "/players.yml");
+	private static PlayerManager instance;
 	
-	
-	public PlayerManager() {
-        if (!PlayersYml.exists()) {
+	private PlayerManager() {
+        if (!playersYml.exists()) {
             try {
-            	PlayersYml.createNewFile();
+            	playersYml.createNewFile();
             }  catch (IOException ex) {
             	ex.printStackTrace();
             }
         }
 		
-		Players = new YamlConfiguration();
+		players = new YamlConfiguration();
 	    loadConfig();
+	}
+	
+	public static PlayerManager getInstance() {
+		if (instance == null) {
+			instance = new PlayerManager();
+		}
+		return instance;
 	}
 	
 	private void saveConfig() {
 		try {
-			Players.save(PlayersYml);
-			Players.load(PlayersYml);
+			players.save(playersYml);
+			players.load(playersYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -38,7 +45,7 @@ public class PlayerManager {
 	
 	private void loadConfig() {
 		try {
-			Players.load(PlayersYml);
+			players.load(playersYml);
 		} catch (IOException | InvalidConfigurationException ex) {
 			ex.printStackTrace();
 		}
@@ -46,54 +53,54 @@ public class PlayerManager {
 	
 	
 	public void joinTeam(String playerName, String teamName, Integer type) {
-		Players.set("Players." + playerName + ".Team", teamName);
-		Players.set("Players." + playerName + ".JoinedDate", Calendar.getInstance().getTime());
+		players.set("Players." + playerName + ".Team", teamName);
+		players.set("Players." + playerName + ".JoinedDate", Calendar.getInstance().getTime());
 		if (type == 1) {
-			Players.set("Players." + playerName + ".IsLeader", true);
+			players.set("Players." + playerName + ".IsLeader", true);
 		} else {
-			Players.set("Players." + playerName + ".IsLeader", false);
+			players.set("Players." + playerName + ".IsLeader", false);
 		}
 		saveConfig();
 	}
 	
 	public boolean leaveTeam(String playerName) {
-		TeamManager tm = new TeamManager();
+		TeamManager tm = TeamManager.getInstance();
 		String teamName = getTeam(playerName);
 		
 		if (playerName.contains(tm.getTeamLeader(teamName))) tm.unregisterTeam(teamName);
-		Players.set("Players." + playerName + ".Team", null);
+		players.set("Players." + playerName + ".Team", null);
 		saveConfig();
 		return true;
 	}
 	
 	public boolean hasTeam(String playerName) {
-		if (Players.get("Players." + playerName + ".Team") != null) return true;
+		if (players.get("Players." + playerName + ".Team") != null) return true;
 		return false;
 	}
 	
 	public String getTeam(String playerName) {
 		if (hasTeam(playerName)) {
-			return Players.getString("Players." + playerName + ".Team");
+			return players.getString("Players." + playerName + ".Team");
 		}
 		return null;
 	}
 	
 	public boolean isTeamLeader(String playerName) {
-		if (Players.getBoolean("Players." + playerName + ".IsLeader")) return true;
+		if (players.getBoolean("Players." + playerName + ".IsLeader")) return true;
 		return false;
 	}
 	
 	public void addKill(String playerName, String killType) {
 		String ymlKills = "Players." + playerName + ".Kills." + killType;
 		
-		Players.set(ymlKills, (Players.getInt(ymlKills) + 1));
+		players.set(ymlKills, (players.getInt(ymlKills) + 1));
 		saveConfig();
 	}
 	
 	public String getKills(String playerName, String killType) {
 		String ymlKills = "Players." + playerName + ".Kills." + killType;
 		
-		if (Players.getString(ymlKills) != null) return Players.getString(ymlKills);
+		if (players.getString(ymlKills) != null) return players.getString(ymlKills);
 		return "0";
 	}
 	

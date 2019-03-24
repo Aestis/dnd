@@ -15,9 +15,9 @@ public class TeamManager {
 
 	FileConfiguration Teams;
 	File TeamsYml = new File(Main.instance.getDataFolder() + "/teams.yml");
-	
+	private static TeamManager instance;
 
-	public TeamManager() {
+	private TeamManager() {
         if (!TeamsYml.exists()) {
             try {
             	TeamsYml.createNewFile();
@@ -28,6 +28,13 @@ public class TeamManager {
 		
 		Teams = new YamlConfiguration();
 	    loadConfig();
+	}
+	
+	public static TeamManager getInstance() {
+		if (instance == null) {
+			instance = new TeamManager();
+		}
+		return instance;
 	}
 	
 	private void saveConfig() {
@@ -49,7 +56,7 @@ public class TeamManager {
 
 	
 	public boolean registerTeam(String teamName, String password, String playerName) {
-		PlayerManager pm = new PlayerManager();
+		PlayerManager pm = PlayerManager.getInstance();
 		
 		if (!Teams.isSet("Teams." + teamName)) {
 			Teams.set("Teams." + teamName + ".Leader", playerName);
