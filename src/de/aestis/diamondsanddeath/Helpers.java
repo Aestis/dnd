@@ -20,7 +20,7 @@ import net.minecraft.server.v1_13_R2.NBTTagCompound;
 public class Helpers {
 	
 	
-	public int getRndInt(int min, int max) {
+	public static int getRndInt(int min, int max) {
 		if (min >= max) {
 			throw new IllegalArgumentException("max must be greater than min");
 		}
@@ -29,7 +29,7 @@ public class Helpers {
 		return r.nextInt((max - min) + 1) + min;
 	}
 	
-    public String md5Hash(String string) {
+    public static String md5Hash(String string) {
         MessageDigest md = null;
         
 		try {
@@ -47,14 +47,14 @@ public class Helpers {
     }
 
 	
-	public boolean isInventoryEmpty(Player player){
+	public static boolean isInventoryEmpty(Player player){
 		for(ItemStack item : player.getInventory().getContents()) {
 			if(item != null) return false;
 		}
 		return true;
 	}
 	
-	public final Block getTargetBlock(Player player, int range) {
+	public static final Block getTargetBlock(Player player, int range) {
         BlockIterator iter = new BlockIterator(player, range);
         Block lastBlock = iter.next();
         while (iter.hasNext()) {
@@ -67,7 +67,7 @@ public class Helpers {
         return lastBlock;
     }
 	
-	public boolean playerInBounds(Player player, Double locX, Double locZ, Double distance) {
+	public static boolean playerInBounds(Player player, Double locX, Double locZ, Double distance) {
 		Location playerLoc = player.getLocation();
 		
 		if (playerLoc.getBlockX() > locX + distance || playerLoc.getBlockX() < locX - distance) return true;
