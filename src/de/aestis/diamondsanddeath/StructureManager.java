@@ -13,24 +13,33 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.EditSession.Stage;
 import com.sk89q.worldedit.EditSessionFactory;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.event.Event;
 import com.sk89q.worldedit.event.extent.EditSessionEvent;
+import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.extent.inventory.BlockBag;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.util.eventbus.EventBus;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.util.io.file.FilenameException;
 
@@ -67,7 +76,7 @@ public class StructureManager {
 	private void copyStructures() {
 		Main.instance.saveResource("recources/BeaconLV1.schem", false);
 	}
-	
+
 	private void saveDefaults() {
 		structures.addDefault("Size", "13");
 		structures.addDefault("CrystalPos.Level4.Y", "5");
@@ -140,42 +149,25 @@ public class StructureManager {
 			ClipboardReader reader = closer.register(format.getReader(bis));
 
 			Clipboard clipboard = reader.read();
-			ClipboardHolder holder = new ClipboardHolder(clipboard);
-			Constructor<?> constructor = null;
+			fis.close();
+			bis.close();
+			reader.close();
+
+			Region region = clipboard.getRegion();
+			BlockVector3 from = clipboard.getOrigin();
+
+			ForwardExtentCopy copy = new ForwardExtentCopy(clipboard, region, from, new BukkitWorld(world), toPos);
 			try {
-				constructor = EditSession.class.getDeclaredConstructor();
-			} catch (NoSuchMethodException | SecurityException e1) {
-				e1.printStackTrace();
-			}
-			constructor.setAccessible(true);
-			EditSession editSession = null;
-			try {
-				editSession = (EditSession) constructor.newInstance(getWorldEdit().getWorldEdit().getEventBus(),new BukkitWorld(world), 100000 , null, new EditSessionEvent(new BukkitWorld(world), null, 100000,Stage.BEFORE_CHANGE));
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				Operations.complete(copy);
+			} catch (WorldEditException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-					//new EditSession(getWorldEdit().getWorldEdit().getEventBus(),new BukkitWorld(world), 100000 , null, new EditSessionEvent(new BukkitWorld(world), null, 100000,Stage.BEFORE_CHANGE) );
-
-			Operation operation = holder
-					.createPaste(editSession)
-					.to(toPos)
-					.ignoreAirBlocks(false)
-					.build();
-			Operations.completeLegacy(operation);
-
 			return true;
 		} catch (IOException e) {
 			Main.instance.getLogger().warning("Schematic could not read or it does not exist: " + e.getMessage());
-		} catch (MaxChangedBlocksException e) {
-			Main.instance.getLogger().warning("Schematic is too big: " + e.getMessage());
 		}
 		return false;
 	}
-	
-	 private WorldEditPlugin getWorldEdit() {
-	        Plugin p = (Plugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-	        if (p instanceof WorldEditPlugin) return (WorldEditPlugin) p;
-	        else return null;
-	    }
 
 }
