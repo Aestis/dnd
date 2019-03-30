@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.BlockVector;
+
+import com.sk89q.worldedit.math.BlockVector3;
 
 import de.aestis.diamondsanddeath.Main;
 import net.md_5.bungee.api.ChatColor;
@@ -30,6 +33,9 @@ public class CommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String arg, String[] argArr) {
 
 		if (cmd.getName().equalsIgnoreCase("dd")) {
+			if (argArr[0].equalsIgnoreCase("test")) {
+				StructureManager.getInstance().pasteStructure("schem", "BeaconLV1", BlockVector3.at(((Player)sender).getLocation().getBlockX(),((Player)sender).getLocation().getBlockY(),((Player)sender).getLocation().getBlockZ()), ((Player)sender).getWorld());
+			}
 			if (argArr[0].equalsIgnoreCase("team")) {
 				
 				//show team info
