@@ -74,4 +74,9 @@ public class Helpers {
 		if (playerLoc.getBlockZ() > locZ + distance || playerLoc.getBlockZ() < locZ - distance) return true;
 		return false;
 	}
+	
+	public static Location randomLocation() {
+		//TODO add random location
+		return null;
+	}
 }

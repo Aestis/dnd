@@ -1,21 +1,13 @@
 package de.aestis.diamondsanddeath;
 
 import java.sql.*;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.util.BlockVector;
-
 import com.sk89q.worldedit.math.BlockVector3;
 
 import de.aestis.diamondsanddeath.Main;
@@ -34,7 +26,7 @@ public class CommandManager implements CommandExecutor {
 
 		if (cmd.getName().equalsIgnoreCase("dd")) {
 			if (argArr[0].equalsIgnoreCase("test")) {
-				StructureManager.getInstance().pasteStructure("schem", "BeaconLV1", BlockVector3.at(((Player)sender).getLocation().getBlockX(),((Player)sender).getLocation().getBlockY(),((Player)sender).getLocation().getBlockZ()), ((Player)sender).getWorld());
+				StructureManager.getInstance().pasteStructure("schem", "BeaconLV1", ((Player)sender).getLocation());
 			}
 			if (argArr[0].equalsIgnoreCase("team")) {
 				

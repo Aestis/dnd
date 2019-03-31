@@ -10,6 +10,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import de.aestis.diamondsanddeath.monuments.MonumentManager;
+
 
 public class TeamManager {
 
@@ -28,6 +30,10 @@ public class TeamManager {
 		
 		Teams = new YamlConfiguration();
 	    loadConfig();
+	}
+	
+	public static TeamManager getInstance() {
+		return null;
 	}
 	
 	private void saveConfig() {
@@ -71,6 +77,11 @@ public class TeamManager {
 	
 	public String getTeamLeader(String teamName) {
 		return Teams.getString("Teams." + teamName + ".Leader");
+	}
+	
+	public Team getTeamByName(String teamName) {
+		//TODO Team zurückgeben
+		return null;
 	}
 	
 	public void setClaim(String teamName, Location location) {
